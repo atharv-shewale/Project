@@ -1,13 +1,19 @@
 import pickle
 import streamlit as st
 import requests
+import os
 
 def fetch_poster(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}"
 
+    tmdb_token = os.getenv('TMDB_API_TOKEN')
+    if not tmdb_token:
+        st.error("TMDB API Token not found. Please set the TMDB_API_TOKEN environment variable.")
+        return "https://via.placeholder.com/300x450?text=API+Token+Missing"
+    
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MDAwZjllYzViNjhkY2YzMDRhNDVkY2Q4NzE2MGZiYiIsIm5iZiI6MTc1MTU2MTE5MC44NTQsInN1YiI6IjY4NjZiM2U2NWFhYjdhZTkyZDcwNThiNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gjHgkR7PmTJl7IK5eaSB9IaFoLGvmxhuQm7FJOfhJxM"
+        "Authorization": f"Bearer {tmdb_token}"
     }
 
     try:
