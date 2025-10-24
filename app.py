@@ -42,7 +42,9 @@ def recommend(movie):
 
 st.header('Movie Recommender System')
 movies = pickle.load(open('movie_list.pkl','rb'))
-similarity = pickle.load(open('similarity.pkl','rb'))
+similarity = pickle.load(open('similarity_optimized.pkl','rb'))
+# Convert sparse matrix to dense for calculations
+similarity = similarity.toarray()
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
