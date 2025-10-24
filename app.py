@@ -107,7 +107,12 @@ def recommend(movie, topk=5):
     return recommended_movie_names, recommended_movie_posters
 
 
-# Header
+# Header with logo
+try:
+    st.image('logo.svg', width=140)
+except Exception:
+    # fallback to text title if image fails to load
+    pass
 st.markdown("<div class='app-title'>Movie Recommender System</div>", unsafe_allow_html=True)
 st.markdown("<div class='app-sub'>Find movies similar to your favorites — beautiful UI and poster previews</div>", unsafe_allow_html=True)
 
