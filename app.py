@@ -47,8 +47,24 @@ def recommend(movie):
 
 
 st.header('Movie Recommender System')
-movies = pickle.load(open('movie_list.pkl','rb'))
-similarity = pickle.load(open('similarity_optimized.pkl','rb'))
+
+# Debug: Print current directory and list files
+import os
+st.write("Current directory:", os.getcwd())
+st.write("Files in directory:", os.listdir())
+
+# Load the pickle files
+try:
+    movies = pickle.load(open('movie_list.pkl','rb'))
+    st.success("Successfully loaded movie_list.pkl")
+except Exception as e:
+    st.error(f"Error loading movie_list.pkl: {str(e)}")
+    
+try:
+    similarity = pickle.load(open('similarity_optimized.pkl','rb'))
+    st.success("Successfully loaded similarity_optimized.pkl")
+except Exception as e:
+    st.error(f"Error loading similarity_optimized.pkl: {str(e)}")
 # Convert sparse matrix to dense for calculations
 similarity = similarity.toarray()
 
