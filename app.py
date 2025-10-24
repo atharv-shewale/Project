@@ -34,16 +34,20 @@ def fetch_poster(movie_id):
 
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
-    distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+    # Use precomputed top-k indices
+    top_indices = topk_indices[index]
     recommended_movie_names = []
     recommended_movie_posters = []
-    for i in distances[1:6]:
-        # fetch the movie poster
-        movie_id = movies.iloc[i[0]].movie_id
+    for idx in top_indices:
+        if idx == index:
+            continue
+        movie_id = movies.iloc[idx].movie_id
         recommended_movie_posters.append(fetch_poster(movie_id))
-        recommended_movie_names.append(movies.iloc[i[0]].title)
+        recommended_movie_names.append(movies.iloc[idx].title)
+        if len(recommended_movie_names) >= 5:
+            break
 
-    return recommended_movie_names,recommended_movie_posters
+    return recommended_movie_names, recommended_movie_posters
 
 
 st.header('Movie Recommender System')
@@ -53,20 +57,21 @@ import os
 st.write("Current directory:", os.getcwd())
 st.write("Files in directory:", os.listdir())
 
-# Load the pickle files
+import numpy as np
+
+# Load the data files
 try:
     movies = pickle.load(open('movie_list.pkl','rb'))
     st.success("Successfully loaded movie_list.pkl")
 except Exception as e:
     st.error(f"Error loading movie_list.pkl: {str(e)}")
-    
 try:
-    similarity = pickle.load(open('similarity_optimized.pkl','rb'))
-    st.success("Successfully loaded similarity_optimized.pkl")
+    topk = np.load('similarity_topk.npz')
+    topk_indices = topk['indices']
+    topk_values = topk['values']
+    st.success("Successfully loaded similarity_topk.npz")
 except Exception as e:
-    st.error(f"Error loading similarity_optimized.pkl: {str(e)}")
-# Convert sparse matrix to dense for calculations
-similarity = similarity.toarray()
+    st.error(f"Error loading similarity_topk.npz: {str(e)}")
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
