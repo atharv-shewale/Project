@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: movie-recommender
+    env: python
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: sh setup.sh && streamlit run app.py --server.port $PORT
+    plan: free
